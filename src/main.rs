@@ -181,6 +181,13 @@ fn test_vec3() {
     }
 }
 
+pub fn print_color(pixel_color: Color) {
+    let ir = (pixel_color.x * 255.0).round();
+    let ig = (pixel_color.y * 255.0).round();
+    let ib = (pixel_color.z * 255.0).round();
+    println!("{} {} {}", ir, ig, ib);
+}
+
 fn write_ppm(w: u32, h: u32) {
     println!("P3");
     println!("{} {}", w, h);
@@ -188,13 +195,12 @@ fn write_ppm(w: u32, h: u32) {
     for j in (0..h).rev() {
         eprint!("\rScanlines remaing: {} ", j);
         for i in 0..w {
-            let r = (i as f32) / ((w - 1) as f32);
-            let g = (j as f32) / ((h - 1) as f32);
-            let b = 0.25_f32;
-            let ir = (r * 255.0).round();
-            let ig = (g * 255.0).round();
-            let ib = (b * 255.0).round();
-            println!("{} {} {}", ir, ig, ib);
+            let pixel_color = Color::new(
+                (i as f32) / ((w - 1) as f32),
+                (j as f32) / ((h - 1) as f32),
+                0.25
+            );
+            print_color(pixel_color);
         }
     }
     eprintln!("\nDone.");
