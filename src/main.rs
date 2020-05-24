@@ -3,6 +3,7 @@ fn write_ppm(w: u32, h: u32) {
     println!("{} {}", w, h);
     println!("255");
     for j in (0..h).rev() {
+        eprint!("\rScanlines remaing: {} ", j);
         for i in 0..w {
             let r = (i as f32) / ((w - 1) as f32);
             let g = (j as f32) / ((h - 1) as f32);
@@ -13,6 +14,7 @@ fn write_ppm(w: u32, h: u32) {
             println!("{} {} {}", ir, ig, ib);
         }
     }
+    eprintln!("\nDone.");
 }
 
 fn main() {
