@@ -1,4 +1,5 @@
 mod vec3;
+mod ray;
 
 use vec3::Color;
 
