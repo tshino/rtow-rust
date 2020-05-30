@@ -15,14 +15,14 @@ pub fn print_color(pixel_color: Color) {
 
 fn hit_sphere(center: &Point3, radius: f32, r: &Ray) -> f32 {
     let oc = r.origin - *center;
-    let a = vec3::dot(r.direction, r.direction);
-    let b = 2.0 * vec3::dot(oc, r.direction);
-    let c = vec3::dot(oc, oc) - radius * radius;
-    let discriminant = b * b - 4.0 * a * c;
+    let a = r.direction.length_squared();
+    let half_b = vec3::dot(oc, r.direction);
+    let c = oc.length_squared() - radius * radius;
+    let discriminant = half_b * half_b - a * c;
     if discriminant < 0.0 {
         -1.0
     } else {
-        (-b - discriminant.sqrt()) / (2.0 * a)
+        (-half_b - discriminant.sqrt()) / a
     }
 }
 
