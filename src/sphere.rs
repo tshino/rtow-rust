@@ -31,14 +31,18 @@ impl Hittable for Sphere {
             let mut t = (-half_b - root) / a;
             if t < t_max && t > t_min {
                 let p = r.at(t);
-                let normal = (p - self.center) / self.radius;
-                HitResult::Hit(HitRecord{ p, normal, t })
+                let mut rec = HitRecord{ p, t, ..Default::default() };
+                let outward_normal = (p - self.center) / self.radius;
+                rec.set_face_normal(&r, &outward_normal);
+                HitResult::Hit(rec)
             } else {
                 t = (-half_b + root) / a;
                 if t < t_max && t > t_min {
                     let p = r.at(t);
-                    let normal = (p - self.center) / self.radius;
-                    HitResult::Hit(HitRecord{ p, normal, t })
+                    let mut rec = HitRecord{ p, t, ..Default::default() };
+                    let outward_normal = (p - self.center) / self.radius;
+                    rec.set_face_normal(&r, &outward_normal);
+                    HitResult::Hit(rec)
                 } else {
                     HitResult::None
                 }
@@ -62,7 +66,8 @@ fn test_sphere_hittable() {
         HitRecord{
             p: Point3::new(0.0, 0.0, -0.5),
             normal: Vec3::new(0.0, 0.0, 1.0),
-            t: 0.5
+            t: 0.5,
+            front_face: true
         }
     ));
     assert!(sphere1.hit(ray1, 0.0, 0.4) == HitResult::None);
