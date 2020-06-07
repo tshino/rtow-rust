@@ -20,7 +20,7 @@ impl Sphere {
 }
 
 impl Hittable for Sphere {
-    fn hit(&self, r: Ray, t_min: f32, t_max: f32) -> HitResult {
+    fn hit(&self, r: &Ray, t_min: f32, t_max: f32) -> HitResult {
         let oc = r.origin - self.center;
         let a = r.direction.length_squared();
         let half_b = vec3::dot(oc, r.direction);
@@ -61,8 +61,8 @@ fn test_sphere_hittable() {
     let ray2 = Ray::new(&Point3::new(0.0, 1.0, 0.0), &Vec3::new(0.0, 0.0, -1.0));
     let ray3 = Ray::new(&Point3::new(0.0, 0.0, 0.0), &Vec3::new(0.5, 0.0, -1.0));
 
-    assert!(sphere1.hit(ray1, 0.0, 2.0) != HitResult::None);
-    assert!(sphere1.hit(ray1, 0.0, 2.0) == HitResult::Hit(
+    assert!(sphere1.hit(&ray1, 0.0, 2.0) != HitResult::None);
+    assert!(sphere1.hit(&ray1, 0.0, 2.0) == HitResult::Hit(
         HitRecord{
             p: Point3::new(0.0, 0.0, -0.5),
             normal: Vec3::new(0.0, 0.0, 1.0),
@@ -70,8 +70,8 @@ fn test_sphere_hittable() {
             front_face: true
         }
     ));
-    assert!(sphere1.hit(ray1, 0.0, 0.4) == HitResult::None);
-    assert!(sphere1.hit(ray2, 0.0, 2.0) == HitResult::None);
-    assert!(sphere2.hit(ray1, 0.0, 2.0) == HitResult::None);
-    assert!(sphere2.hit(ray3, 0.0, 2.0) != HitResult::None);
+    assert!(sphere1.hit(&ray1, 0.0, 0.4) == HitResult::None);
+    assert!(sphere1.hit(&ray2, 0.0, 2.0) == HitResult::None);
+    assert!(sphere2.hit(&ray1, 0.0, 2.0) == HitResult::None);
+    assert!(sphere2.hit(&ray3, 0.0, 2.0) != HitResult::None);
 }

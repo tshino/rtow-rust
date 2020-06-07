@@ -27,7 +27,7 @@ pub enum HitResult {
 }
 
 pub trait Hittable {
-    fn hit(&self, r: Ray, t_min: f32, t_max: f32) -> HitResult;
+    fn hit(&self, r: &Ray, t_min: f32, t_max: f32) -> HitResult;
 }
 
 #[test]
