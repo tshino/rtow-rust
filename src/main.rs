@@ -3,6 +3,7 @@ mod ray;
 mod hittable;
 mod hittable_list;
 mod sphere;
+mod util;
 
 use vec3::Vec3;
 use vec3::Point3;
