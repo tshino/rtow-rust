@@ -16,10 +16,13 @@ use hittable::HitResult;
 use hittable_list::HittableList;
 use sphere::Sphere;
 
-fn ray_color(r: &Ray, world: &dyn Hittable) -> Color {
+fn ray_color(r: &Ray, world: &dyn Hittable, depth: i32) -> Color {
+    if depth <= 0 {
+        return Color::zeros();
+    }
     if let HitResult::Hit(rec) = world.hit(r, 0.0, f32::INFINITY) {
         let target = rec.p + rec.normal + util::random_vec3_in_unit_sphere();
-        return 0.5 * ray_color(&Ray::new(&rec.p, &(target - rec.p)), world);
+        return 0.5 * ray_color(&Ray::new(&rec.p, &(target - rec.p)), world, depth - 1);
     }
     let unit_direction = vec3::unit_vector(r.direction);
     let t = 0.5 * (unit_direction.y + 1.0);
@@ -31,6 +34,7 @@ fn main() {
     const H: u32 = 216;
     let aspect_ratio: f32 = W as f32 / H as f32;
     const SAMPLES_PER_PIXEL: i32 = 100;
+    const MAX_DEPTH: i32 = 50;
 
     println!("P3\n{} {}\n255", W, H);
 
@@ -48,7 +52,7 @@ fn main() {
                 let u = (i as f32 + util::random_float()) / (W as f32);
                 let v = (j as f32 + util::random_float()) / (H as f32);
                 let r = camera.get_ray(u, v);
-                pixel_color += ray_color(&r, &world);
+                pixel_color += ray_color(&r, &world, MAX_DEPTH);
             }
             color::print_color(pixel_color, SAMPLES_PER_PIXEL);
         }
