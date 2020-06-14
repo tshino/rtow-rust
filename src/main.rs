@@ -18,7 +18,8 @@ use sphere::Sphere;
 
 fn ray_color(r: &Ray, world: &dyn Hittable) -> Color {
     if let HitResult::Hit(rec) = world.hit(r, 0.0, f32::INFINITY) {
-        return 0.5 * (rec.normal + Color::new(1.0, 1.0, 1.0));
+        let target = rec.p + rec.normal + util::random_vec3_in_unit_sphere();
+        return 0.5 * ray_color(&Ray::new(&rec.p, &(target - rec.p)), world);
     }
     let unit_direction = vec3::unit_vector(r.direction);
     let t = 0.5 * (unit_direction.y + 1.0);
