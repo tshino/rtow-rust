@@ -21,7 +21,7 @@ fn ray_color(r: &Ray, world: &dyn Hittable, depth: i32) -> Color {
         return Color::zeros();
     }
     if let HitResult::Hit(rec) = world.hit(r, 0.001, f32::INFINITY) {
-        let target = rec.p + rec.normal + util::random_vec3_in_unit_sphere();
+        let target = rec.p + rec.normal + util::random_unit_vec3();
         return 0.5 * ray_color(&Ray::new(&rec.p, &(target - rec.p)), world, depth - 1);
     }
     let unit_direction = vec3::unit_vector(r.direction);

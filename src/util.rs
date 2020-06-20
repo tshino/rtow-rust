@@ -1,3 +1,4 @@
+use std::f32;
 use rand::Rng;
 use rand::distributions::{Distribution, Uniform};
 use super::vec3::Vec3;
@@ -25,6 +26,13 @@ pub fn random_vec3_in_unit_sphere() -> Vec3 {
             return p;
         }
     }
+}
+
+pub fn random_unit_vec3() -> Vec3 {
+    let a = random_float_in(0.0, 2.0 * f32::consts::PI);
+    let z = random_float_in(-1.0, 1.0);
+    let r = (1.0 - z * z).sqrt();
+    Vec3::new(r * a.cos(), r * a.sin(), z)
 }
 
 pub fn clamp(x: f32, min: f32, max: f32) -> f32 {
@@ -82,4 +90,14 @@ fn test_random_vec3_in_unit_sphere() {
     assert!(p1.length() < 1.0);
     assert!(p2.length() < 1.0);
     assert!(p3.length() < 1.0);
+}
+
+#[test]
+fn test_random_unit_vec3() {
+    let p1 = random_unit_vec3();
+    let p2 = random_unit_vec3();
+    let p3 = random_unit_vec3();
+    assert!(p1.length() - 1.0 < 1e-10);
+    assert!(p2.length() - 1.0 < 1e-10);
+    assert!(p3.length() - 1.0 < 1e-10);
 }
