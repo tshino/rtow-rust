@@ -1,6 +1,7 @@
 use std::f32;
 use rand::Rng;
 use rand::distributions::{Distribution, Uniform};
+use super::vec3;
 use super::vec3::Vec3;
 
 pub fn random_float() -> f32 {
@@ -33,6 +34,15 @@ pub fn random_unit_vec3() -> Vec3 {
     let z = random_float_in(-1.0, 1.0);
     let r = (1.0 - z * z).sqrt();
     Vec3::new(r * a.cos(), r * a.sin(), z)
+}
+
+pub fn random_vec3_in_hemisphere(normal: &Vec3) -> Vec3 {
+    let in_unit_sphere = random_vec3_in_unit_sphere();
+    if vec3::dot(in_unit_sphere, *normal) > 0.0 {
+        in_unit_sphere
+    } else {
+        -in_unit_sphere
+    }
 }
 
 pub fn clamp(x: f32, min: f32, max: f32) -> f32 {
@@ -100,4 +110,14 @@ fn test_random_unit_vec3() {
     assert!(p1.length() - 1.0 < 1e-10);
     assert!(p2.length() - 1.0 < 1e-10);
     assert!(p3.length() - 1.0 < 1e-10);
+}
+
+#[test]
+fn test_random_vec3_in_hemisphere() {
+    let p1 = random_vec3_in_hemisphere(&Vec3::new(0.0, 1.0, 0.0));
+    let p2 = random_vec3_in_hemisphere(&Vec3::new(0.0, 1.0, 0.0));
+    let p3 = random_vec3_in_hemisphere(&Vec3::new(0.0, 1.0, 0.0));
+    assert!(p1.y >= 0.0);
+    assert!(p2.y >= 0.0);
+    assert!(p3.y >= 0.0);
 }

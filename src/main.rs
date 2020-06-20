@@ -21,7 +21,10 @@ fn ray_color(r: &Ray, world: &dyn Hittable, depth: i32) -> Color {
         return Color::zeros();
     }
     if let HitResult::Hit(rec) = world.hit(r, 0.001, f32::INFINITY) {
+        // True Lambertian reflection:
         let target = rec.p + rec.normal + util::random_unit_vec3();
+        // An alternative diffuse fomulation (random in hemisphere):
+        // let target = rec.p + util::random_vec3_in_hemisphere(&rec.normal);
         return 0.5 * ray_color(&Ray::new(&rec.p, &(target - rec.p)), world, depth - 1);
     }
     let unit_direction = vec3::unit_vector(r.direction);
