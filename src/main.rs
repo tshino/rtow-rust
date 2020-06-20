@@ -20,7 +20,7 @@ fn ray_color(r: &Ray, world: &dyn Hittable, depth: i32) -> Color {
     if depth <= 0 {
         return Color::zeros();
     }
-    if let HitResult::Hit(rec) = world.hit(r, 0.0, f32::INFINITY) {
+    if let HitResult::Hit(rec) = world.hit(r, 0.001, f32::INFINITY) {
         let target = rec.p + rec.normal + util::random_vec3_in_unit_sphere();
         return 0.5 * ray_color(&Ray::new(&rec.p, &(target - rec.p)), world, depth - 1);
     }
@@ -45,7 +45,7 @@ fn main() {
     world.add(Box::new(Sphere::new(Point3::new(0.0, -100.5, -1.0), 100.0)));
 
     for j in (0..H).rev() {
-        eprint!("\rScanlines remaing: {} ", j);
+        eprint!("\rScanlines remaining: {} ", j);
         for i in 0..W {
             let mut pixel_color = Color::zeros();
             for _s in 0..SAMPLES_PER_PIXEL {
