@@ -7,6 +7,7 @@ use ray::Ray;
 use hittable::Hittable;
 use hittable::HitRecord;
 use hittable::HitResult;
+use hittable::FaceNormal;
 
 pub struct Sphere {
     center: Point3,
@@ -31,17 +32,17 @@ impl Hittable for Sphere {
             let mut t = (-half_b - root) / a;
             if t < t_max && t > t_min {
                 let p = r.at(t);
-                let mut rec = HitRecord{ p, t, ..Default::default() };
                 let outward_normal = (p - self.center) / self.radius;
-                rec.set_face_normal(&r, &outward_normal);
+                let face_normal = FaceNormal::new(&r, &outward_normal);
+                let rec = HitRecord::new(p, t, face_normal);
                 HitResult::Hit(rec)
             } else {
                 t = (-half_b + root) / a;
                 if t < t_max && t > t_min {
                     let p = r.at(t);
-                    let mut rec = HitRecord{ p, t, ..Default::default() };
                     let outward_normal = (p - self.center) / self.radius;
-                    rec.set_face_normal(&r, &outward_normal);
+                    let face_normal = FaceNormal::new(&r, &outward_normal);
+                    let rec = HitRecord::new(p, t, face_normal);
                     HitResult::Hit(rec)
                 } else {
                     HitResult::None

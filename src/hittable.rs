@@ -5,7 +5,7 @@ use vec3::Point3;
 use vec3::Vec3;
 use ray::Ray;
 
-#[derive(Default, PartialEq, Debug)]
+#[derive(PartialEq, Debug)]
 pub struct HitRecord {
     pub p: Point3,
     pub normal: Vec3,
@@ -13,10 +13,22 @@ pub struct HitRecord {
     pub front_face: bool
 }
 
+pub struct FaceNormal {
+    pub normal: Vec3,
+    pub front_face: bool
+}
+
 impl HitRecord {
-    pub fn set_face_normal(&mut self, r: &Ray, outward_normal: &Vec3) {
-        self.front_face = vec3::dot(r.direction, *outward_normal) < 0.0;
-        self.normal = if self.front_face { *outward_normal } else { -*outward_normal };
+    pub fn new(p: Point3, t: f32, face_normal: FaceNormal) -> Self {
+        Self{ p, normal: face_normal.normal, t, front_face: face_normal.front_face }
+    }
+}
+
+impl FaceNormal {
+    pub fn new(r: &Ray, outward_normal: &Vec3) -> Self {
+        let front_face = vec3::dot(r.direction, *outward_normal) < 0.0;
+        let normal = if front_face { *outward_normal } else { -*outward_normal };
+        Self{ normal, front_face }
     }
 }
 
@@ -33,15 +45,11 @@ pub trait Hittable {
 #[test]
 fn test_hit_record() {
     {
-        let rec: HitRecord = Default::default();
-        assert_eq!(rec.t, 0.0);
-    }
-    {
-        let mut rec: HitRecord = Default::default();
-        rec.set_face_normal(
+        let face_normal = FaceNormal::new(
             &Ray::new(&Point3::new(0.0, 0.0, 0.0), &Vec3::new(0.0, 0.0, -1.0)),
             &Vec3::new(0.0, 0.0, 1.0)
         );
+        let rec = HitRecord::new(Vec3::zeros(), 1.0, face_normal);
         assert_eq!(rec.normal, Vec3::new(0.0, 0.0, 1.0));
         assert_eq!(rec.front_face, true);
     }
